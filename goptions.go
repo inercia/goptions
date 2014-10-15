@@ -21,6 +21,8 @@ member but can additionally specify any of these options below.
 
     obligatory        - Flag must be specified. Otherwise an error will be returned
                         when Parse() is called.
+    config            -     This flag specifies a config file path that can be loaded
+    maps='...'        - Sets the attribute mapped in the config loaded
     description='...' - Set the description for this particular flag. Will be
                         used by the HelpFunc.
     mutexgroup='...'  - Add this flag to a MutexGroup. Only one flag of the
@@ -78,6 +80,18 @@ var (
 func ParseAndFail(v interface{}) {
 	globalFlagSet = NewFlagSet(filepath.Base(os.Args[0]), v)
 	globalFlagSet.ParseAndFail(os.Stderr, os.Args[1:])
+}
+
+func LoadConfWithAlternatives(c interface{}, alternatives []string) error {
+	if globalFlagSet == nil {
+		panic("LoadConf() must be invoked after Parse*()")
+	}
+	return globalFlagSet.LoadConf(c, alternatives)
+}
+
+func LoadConf(c interface{}) error {
+	alternatives := []string{}
+	return LoadConfWithAlternatives(c, alternatives)
 }
 
 // Parse parses the command-line flags from os.Args[1:].

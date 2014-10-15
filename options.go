@@ -17,7 +17,9 @@ var (
 		nil: optionMap{
 			"description": description,
 			"obligatory":  obligatory,
+			"maps":        mapsTo,
 			"mutexgroup":  mutexgroup,
+			"config":      configPath,
 		},
 		reflect.TypeOf(new(*os.File)).Elem(): optionMap{
 			"create": initOptionMeta(file_create, "file_mode", 0),
@@ -51,6 +53,16 @@ func description(f *Flag, option, value string) error {
 
 func obligatory(f *Flag, option, value string) error {
 	f.Obligatory = true
+	return nil
+}
+
+func configPath(f *Flag, option, value string) error {
+	f.ConfigPath = true
+	return nil
+}
+
+func mapsTo(f *Flag, option, value string) error {
+	f.MapsTo = value
 	return nil
 }
 

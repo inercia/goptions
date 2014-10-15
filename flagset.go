@@ -1,8 +1,10 @@
 package goptions
 
 import (
+	"code.google.com/p/gcfg"
 	"errors"
 	"fmt"
+	"github.com/inercia/reflecter"
 	"io"
 	"os"
 	"reflect"
@@ -217,6 +219,75 @@ func (fs *FlagSet) MutexGroups() map[string]MutexGroup {
 // Prints the FlagSet's help to the given writer.
 func (fs *FlagSet) PrintHelp(w io.Writer) {
 	fs.HelpFunc(w, fs)
+}
+
+// fill the config structure with the values in the options that
+// can be mapped
+func (fs *FlagSet) LoadConf(cfg interface{}, alternatives []string) (err error) {
+	configPath := ""
+	for _, f := range fs.Flags {
+		if f.ConfigPath {
+			tmp := f.value.String()
+			if len(tmp) > 0 {
+				if _, err = os.Stat(tmp); os.IsNotExist(err) {
+					return fmt.Errorf("could not find config file: %s", tmp)
+				} else {
+					configPath = tmp
+					break
+				}
+			}
+		}
+	}
+
+	// try to search in the alternatives...
+	if len(configPath) == 0 {
+		for i := range alternatives {
+			tmp := alternatives[i]
+			if _, err = os.Stat(tmp); err == nil {
+				configPath = tmp
+				break
+			}
+		}
+	}
+
+	if len(configPath) == 0 {
+		return fmt.Errorf("could not find a valid config file")
+	}
+
+	vPCfg := reflect.ValueOf(cfg)
+	if vPCfg.Kind() != reflect.Ptr || vPCfg.Elem().Kind() != reflect.Struct {
+		panic(fmt.Errorf("config must be a pointer to a struct"))
+	}
+
+	// try to find the config path
+	err = gcfg.ReadFileInto(cfg, configPath)
+	if err != nil {
+		return fmt.Errorf("could not load config file: %s", configPath)
+	}
+
+	// look for the options that have a mapping, and set those values
+	// in the config structure
+	for _, f := range fs.Flags {
+		if f.WasSpecified && len(f.MapsTo) > 0 {
+			mapsTo := strings.Split(f.MapsTo, "/")
+			value := f.value.String()
+			blank := (len(value) == 0)
+			sect, sub, name := "", "", ""
+			switch len(mapsTo) {
+			case 3:
+				sect, sub, name = mapsTo[0], mapsTo[1], mapsTo[2]
+			case 2:
+				sect, name = mapsTo[0], mapsTo[1]
+			case 1:
+				name = mapsTo[0]
+			default:
+				return fmt.Errorf("invalid mapping in arguments %s (maybe too deep?)", f.MapsTo)
+			}
+			reflecter.Set(cfg, sect, sub, name, blank, value)
+		}
+	}
+
+	return nil
 }
 
 func (fs *FlagSet) ParseAndFail(w io.Writer, args []string) {

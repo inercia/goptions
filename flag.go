@@ -13,6 +13,8 @@ type Flag struct {
 	MutexGroups  []string
 	Description  string
 	Obligatory   bool
+	ConfigPath   bool
+	MapsTo       string
 	WasSpecified bool
 	value        reflect.Value
 	optionMeta   map[string]interface{}
