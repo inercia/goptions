@@ -6,6 +6,11 @@ by the tags in a (possibly anonymous) struct.
 
 ![](https://circleci.com/gh/voxelbrain/goptions.png?circle-token=27cd98362d475cfa8c586565b659b2204733f25c)
 
+
+# Fork changes
+
+This fork implements some basic config file functionality, and it lets you map some command line options with config file parameters.
+
 # Example
 
 ```Go
@@ -79,4 +84,3 @@ Verbs:
 ```
 
 ---
-Version 2.5.6
