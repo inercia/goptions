@@ -9,7 +9,7 @@ by the tags in a (possibly anonymous) struct.
 
 # Fork changes
 
-This fork implements some basic config file functionality, and it lets you map some command line options with config file parameters.
+This fork implements some basic config file functionality, and it lets you map some command line options with config file parameters. You can use the `maps=` attribute for mapping a command line option to a structure element, so it will be automatically filled up when you parse the arguments.
 
 # Example
 
