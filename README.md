@@ -5,6 +5,7 @@ exclusive flags, and verbs. Flags and their corresponding variables are defined
 by the tags in a (possibly anonymous) struct.
 
 [![Build Status](https://drone.io/github.com/inercia/goptions/status.png)](https://drone.io/github.com/inercia/goptions/latest)
+[![Documentation](http://gowalker.org/api/v1/badge)](https://gowalker.org/github.com/inercia/goptions)
 
 
 # Example
