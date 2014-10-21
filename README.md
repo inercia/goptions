@@ -81,4 +81,4 @@ Verbs:
 
 ## Fork changes
 
-This fork implements some basic config file functionality, and it lets you map some command line options with config file parameters. You can use the `maps=` attribute for mapping a command line option to a structure element, so it will be automatically filled up when you parse the arguments.
+This fork implements some basic config file functionality, and it lets you map some command line options with config file parameter: you can use the `maps=` attribute for assigning a command line option to an (arbitrarily deep) structure element, and it will be automatically filled up when you parse the arguments.
